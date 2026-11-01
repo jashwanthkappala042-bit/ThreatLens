@@ -1,0 +1,121 @@
+
+# ==========================================
+# THREATLENS - GITIGNORE
+# ==========================================
+
+# ==========================================
+# SECRETS AND LOCAL CONFIGURATION
+# ==========================================
+
+.env
+.env.*
+!.env.example
+frontend/.env.local
+frontend/.env.*.local
+
+# ==========================================
+# PYTHON
+# ==========================================
+
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# ==========================================
+# LOCAL DATABASE AND APPLICATION DATA
+# ==========================================
+
+backend/instance/
+instance/
+*.sqlite
+*.sqlite3
+*.db
+
+# ==========================================
+# GENERATED REPORTS AND COMPLAINTS
+# ==========================================
+
+backend/storage/complaints/*.pdf
+backend/storage/reports/*.pdf
+
+!backend/storage/complaints/.gitkeep
+!backend/storage/reports/.gitkeep
+
+# ==========================================
+# MACHINE LEARNING DATASETS
+# ==========================================
+
+# Exclude downloaded datasets but retain documentation
+**/datasets/*
+!**/datasets/README.md
+!**/datasets/.gitkeep
+
+# ==========================================
+# MACHINE LEARNING MODEL FILES
+# ==========================================
+
+# Ignore generated and temporary model artifacts
+**/models/*.joblib
+**/models/*.pkl
+**/models/*.pickle
+**/models/*.onnx
+**/models/*.pt
+**/models/*.pth
+**/models/*.h5
+**/models/*.keras
+**/models/*.safetensors
+
+# Include required ThreatLens production models
+!ml/models/email_model.joblib
+!ml/models/url_model.joblib
+!ml/models/sms_model.joblib
+
+# ==========================================
+# MACHINE LEARNING REPORTS
+# ==========================================
+
+**/reports/*.log
+
+# ==========================================
+# NODE.JS AND REACT
+# ==========================================
+
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+dist/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# EDITORS AND OPERATING SYSTEMS
+# ==========================================
+
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# ==========================================
+# TEMPORARY FILES
+# ==========================================
+
+*.log
+*.tmp
+*.temp
+
+
+ml/reports/_smoke_*.json

@@ -1,0 +1,526 @@
+{
+  "generated_at": "2026-11-01T11:21:37Z",
+  "dataset": "SMS Phishing Dataset for Machine Learning and Pattern Recognition",
+  "dataset_license": "CC BY 4.0",
+  "dataset_fingerprint": {
+    "path": "ml/datasets/raw/sms/Dataset_5971.csv",
+    "bytes": 595987,
+    "sha256": "649844f1c62a6b27e145eaf17a65f7010c56c390e11a794ea8329993a05ba71e"
+  },
+  "dataset_stats": {
+    "rows_read": 5971,
+    "duplicate_texts_removed": 24,
+    "ambiguous_duplicate_groups_dropped": 2,
+    "rows_missing_label": 0,
+    "rows_empty_text": 0,
+    "rows_used": 5947,
+    "label_counts": {
+      "ham": 4834,
+      "spam": 487,
+      "smishing": 626
+    },
+    "original_label_spellings": [
+      "Smishing",
+      "Spam",
+      "ham",
+      "smishing",
+      "spam"
+    ]
+  },
+  "split": {
+    "seed": 42,
+    "train": 4162,
+    "validation": 892,
+    "test": 893,
+    "stratified": true
+  },
+  "environment": {
+    "python": "3.14.0",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "scikit_learn": "1.9.1",
+    "pandas": "3.1.0",
+    "numpy": "2.3.4",
+    "joblib": "1.6.0"
+  },
+  "models": [
+    {
+      "model": "word_tfidf_linear_svm",
+      "fit_seconds_train_only": 1.09,
+      "validation": {
+        "accuracy": 0.955157,
+        "precision_macro": 0.871516,
+        "recall_macro": 0.858338,
+        "f1_macro": 0.863888,
+        "f1_weighted": 0.954493,
+        "per_class": {
+          "ham": {
+            "precision": 0.986264,
+            "recall": 0.990345,
+            "f1": 0.9883,
+            "support": 725
+          },
+          "spam": {
+            "precision": 0.8,
+            "recall": 0.712329,
+            "f1": 0.753623,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.828283,
+            "recall": 0.87234,
+            "f1": 0.849741,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            718,
+            3,
+            4
+          ],
+          [
+            8,
+            52,
+            13
+          ],
+          [
+            2,
+            10,
+            82
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 892,
+        "roc_auc_ovr_macro": 0.977741
+      },
+      "test": {
+        "accuracy": 0.965286,
+        "precision_macro": 0.891981,
+        "recall_macro": 0.876863,
+        "f1_macro": 0.883688,
+        "f1_weighted": 0.964626,
+        "per_class": {
+          "ham": {
+            "precision": 0.991781,
+            "recall": 0.997245,
+            "f1": 0.994505,
+            "support": 726
+          },
+          "spam": {
+            "precision": 0.818182,
+            "recall": 0.739726,
+            "f1": 0.776978,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.865979,
+            "recall": 0.893617,
+            "f1": 0.879581,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            724,
+            2,
+            0
+          ],
+          [
+            6,
+            54,
+            13
+          ],
+          [
+            0,
+            10,
+            84
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 893,
+        "roc_auc_ovr_macro": 0.988281
+      }
+    },
+    {
+      "model": "char_tfidf_logistic_regression",
+      "fit_seconds_train_only": 3.79,
+      "validation": {
+        "accuracy": 0.957399,
+        "precision_macro": 0.870555,
+        "recall_macro": 0.854105,
+        "f1_macro": 0.861854,
+        "f1_weighted": 0.956695,
+        "per_class": {
+          "ham": {
+            "precision": 0.989041,
+            "recall": 0.995862,
+            "f1": 0.99244,
+            "support": 725
+          },
+          "spam": {
+            "precision": 0.791045,
+            "recall": 0.726027,
+            "f1": 0.757143,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.831579,
+            "recall": 0.840426,
+            "f1": 0.835979,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            722,
+            1,
+            2
+          ],
+          [
+            6,
+            53,
+            14
+          ],
+          [
+            2,
+            13,
+            79
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 892,
+        "roc_auc_ovr_macro": 0.982498
+      },
+      "test": {
+        "accuracy": 0.967525,
+        "precision_macro": 0.894344,
+        "recall_macro": 0.891122,
+        "f1_macro": 0.89272,
+        "f1_weighted": 0.967416,
+        "per_class": {
+          "ham": {
+            "precision": 0.994498,
+            "recall": 0.995868,
+            "f1": 0.995182,
+            "support": 726
+          },
+          "spam": {
+            "precision": 0.805556,
+            "recall": 0.794521,
+            "f1": 0.8,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.882979,
+            "recall": 0.882979,
+            "f1": 0.882979,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            723,
+            3,
+            0
+          ],
+          [
+            4,
+            58,
+            11
+          ],
+          [
+            0,
+            11,
+            83
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 893,
+        "roc_auc_ovr_macro": 0.982796
+      }
+    },
+    {
+      "model": "word_tfidf_logistic_regression",
+      "fit_seconds_train_only": 2.78,
+      "validation": {
+        "accuracy": 0.952915,
+        "precision_macro": 0.86302,
+        "recall_macro": 0.850226,
+        "f1_macro": 0.855603,
+        "f1_weighted": 0.952215,
+        "per_class": {
+          "ham": {
+            "precision": 0.986264,
+            "recall": 0.990345,
+            "f1": 0.9883,
+            "support": 725
+          },
+          "spam": {
+            "precision": 0.784615,
+            "recall": 0.69863,
+            "f1": 0.73913,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.818182,
+            "recall": 0.861702,
+            "f1": 0.839378,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            718,
+            3,
+            4
+          ],
+          [
+            8,
+            51,
+            14
+          ],
+          [
+            2,
+            11,
+            81
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 892,
+        "roc_auc_ovr_macro": 0.966159
+      },
+      "test": {
+        "accuracy": 0.965286,
+        "precision_macro": 0.891864,
+        "recall_macro": 0.88097,
+        "f1_macro": 0.886056,
+        "f1_weighted": 0.96481,
+        "per_class": {
+          "ham": {
+            "precision": 0.99177,
+            "recall": 0.995868,
+            "f1": 0.993814,
+            "support": 726
+          },
+          "spam": {
+            "precision": 0.808824,
+            "recall": 0.753425,
+            "f1": 0.780142,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.875,
+            "recall": 0.893617,
+            "f1": 0.884211,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            723,
+            3,
+            0
+          ],
+          [
+            6,
+            55,
+            12
+          ],
+          [
+            0,
+            10,
+            84
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 893,
+        "roc_auc_ovr_macro": 0.979117
+      }
+    },
+    {
+      "model": "word_tfidf_complement_nb",
+      "fit_seconds_train_only": 0.78,
+      "validation": {
+        "accuracy": 0.947309,
+        "precision_macro": 0.868367,
+        "recall_macro": 0.819208,
+        "f1_macro": 0.834841,
+        "f1_weighted": 0.944021,
+        "per_class": {
+          "ham": {
+            "precision": 0.975577,
+            "recall": 0.991724,
+            "f1": 0.983584,
+            "support": 725
+          },
+          "spam": {
+            "precision": 0.82,
+            "recall": 0.561644,
+            "f1": 0.666667,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.809524,
+            "recall": 0.904255,
+            "f1": 0.854271,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            719,
+            2,
+            4
+          ],
+          [
+            16,
+            41,
+            16
+          ],
+          [
+            2,
+            7,
+            85
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 892,
+        "roc_auc_ovr_macro": 0.967806
+      },
+      "test": {
+        "accuracy": 0.964166,
+        "precision_macro": 0.909866,
+        "recall_macro": 0.866149,
+        "f1_macro": 0.883846,
+        "f1_weighted": 0.962458,
+        "per_class": {
+          "ham": {
+            "precision": 0.983718,
+            "recall": 0.998623,
+            "f1": 0.991114,
+            "support": 726
+          },
+          "spam": {
+            "precision": 0.877193,
+            "recall": 0.684932,
+            "f1": 0.769231,
+            "support": 73
+          },
+          "smishing": {
+            "precision": 0.868687,
+            "recall": 0.914894,
+            "f1": 0.891192,
+            "support": 94
+          }
+        },
+        "confusion_matrix": [
+          [
+            725,
+            0,
+            1
+          ],
+          [
+            11,
+            50,
+            12
+          ],
+          [
+            1,
+            7,
+            86
+          ]
+        ],
+        "labels": [
+          "ham",
+          "spam",
+          "smishing"
+        ],
+        "support": 893,
+        "roc_auc_ovr_macro": 0.970275
+      }
+    }
+  ],
+  "selected_model": "word_tfidf_linear_svm",
+  "selected_refit_seconds": 1.44,
+  "selected_test_metrics": {
+    "accuracy": 0.969765,
+    "precision_macro": 0.906392,
+    "recall_macro": 0.893087,
+    "f1_macro": 0.898926,
+    "f1_weighted": 0.969245,
+    "per_class": {
+      "ham": {
+        "precision": 0.993141,
+        "recall": 0.997245,
+        "f1": 0.995189,
+        "support": 726
+      },
+      "spam": {
+        "precision": 0.848485,
+        "recall": 0.767123,
+        "f1": 0.805755,
+        "support": 73
+      },
+      "smishing": {
+        "precision": 0.877551,
+        "recall": 0.914894,
+        "f1": 0.895833,
+        "support": 94
+      }
+    },
+    "confusion_matrix": [
+      [
+        724,
+        2,
+        0
+      ],
+      [
+        5,
+        56,
+        12
+      ],
+      [
+        0,
+        8,
+        86
+      ]
+    ],
+    "labels": [
+      "ham",
+      "spam",
+      "smishing"
+    ],
+    "support": 893,
+    "roc_auc_ovr_macro": 0.988501
+  },
+  "artifact": "ml/models/sms_model.joblib",
+  "artifact_bytes": 2225561
+}

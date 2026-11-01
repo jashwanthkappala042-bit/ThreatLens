@@ -1,0 +1,1203 @@
+{
+  "generated_at": "2026-11-01T11:41:37Z",
+  "dataset": "PhiUSIIL Phishing URL Dataset",
+  "dataset_license": "CC BY 4.0",
+  "dataset_fingerprint": {
+    "path": "ml/datasets/raw/phiusiil/PhiUSIIL_Phishing_URL_Dataset.csv",
+    "bytes": 56854345,
+    "sha256": "a236549cd369cd80bd478ff8e1779cbf44c58d5c3f79f7a51a1adbed7d06d1c6"
+  },
+  "dataset_rows_read": 235795,
+  "dataset_rows_used": 235761,
+  "rejected_invalid_urls": 34,
+  "rejected_examples": [
+    {
+      "url": "http://www.paypal.com:911@xn--80aaahorunoimsf3p.xn--p1ai/fix-account/",
+      "reason": "URLs containing embedded credentials are not supported."
+    },
+    {
+      "url": "https://b4e921f0.sso-mailsrvr-4344e5teed.pages.dev/support/?emailtoken=abuse@gmail.com&amp;domain=gmail.com#eyj2zxjzaw9uijoimc4yljailcjjb21wcmvzc2vkijpmywxzzswiym9kesi6ilxupcfet0nuwvbfigh0bww+xg48agvhzd5cbjxzdhlszt5cblxupc9zdhlszt5cbjxzy3jpchqgdhlwzt1cinrlehqvamf2yxnjcmlwdfwiplxuxg48l3njcmlwdd5cbjwv",
+      "reason": "URL must be 2048 characters or fewer."
+    },
+    {
+      "url": "http://191.252.178.240:8087/",
+      "reason": "Only standard web ports (80, 443) are allowed."
+    },
+    {
+      "url": "http://47.103.128.80:8085/din.php",
+      "reason": "Only standard web ports (80, 443) are allowed."
+    },
+    {
+      "url": "https://premium57.web-hosting.com:2096/cpsess3669307974/horde/imp/dynamic.php?page=mailbox#",
+      "reason": "Only standard web ports (80, 443) are allowed."
+    },
+    {
+      "url": "http://netflixaccount.node:911@env-2949886.node.cloudlets.zone/",
+      "reason": "URLs containing embedded credentials are not supported."
+    },
+    {
+      "url": "http://supersanchez.com:9595/fonts/vendor/ionicons/aagri/agri/home/index.php",
+      "reason": "Only standard web ports (80, 443) are allowed."
+    },
+    {
+      "url": "https://vystar..0rg@client.iebetanialaargentina.edu.co",
+      "reason": "URLs containing embedded credentials are not supported."
+    },
+    {
+      "url": "http://115.78.226.68:8080/das.php",
+      "reason": "Only standard web ports (80, 443) are allowed."
+    },
+    {
+      "url": "https://xwebhostapp.github.io/freehost//#eyj2zxjzaw9uijoimc4yljailcjjb21wcmvzc2vkijpmywxzzswiym9kesi6ilxupcfet0nuwvbfigh0bww+xg48agvhzd5cbjxzdhlszt5cbioge1xuxhrib3gtc2l6aw5noibib3jkzxitym94o1xufvxuxg5ib2r5ihtcblx0ymfja2dyb3vuzc1jb2xvcjogi2zmzmzmzjtcblx0zm9udc1myw1pbhk6iefyawfslcbzyw5zlxnlcmlmo1xufvx",
+      "reason": "URL must be 2048 characters or fewer."
+    }
+  ],
+  "duplicate_urls_in_source": 425,
+  "duplicate_domains_in_source": 15709,
+  "domains_with_conflicting_labels": 54,
+  "label_counts": {
+    "legitimate_original_1": 134850,
+    "phishing_original_0": 100945
+  },
+  "feature_tiers": {
+    "dataset_url_only": {
+      "n_features": 18,
+      "columns": [
+        "URLLength",
+        "DomainLength",
+        "IsDomainIP",
+        "TLDLength",
+        "NoOfSubDomain",
+        "HasObfuscation",
+        "NoOfObfuscatedChar",
+        "ObfuscationRatio",
+        "NoOfLettersInURL",
+        "LetterRatioInURL",
+        "NoOfDegitsInURL",
+        "DegitRatioInURL",
+        "NoOfEqualsInURL",
+        "NoOfQMarkInURL",
+        "NoOfAmpersandInURL",
+        "NoOfOtherSpecialCharsInURL",
+        "SpacialCharRatioInURL",
+        "IsHTTPS"
+      ],
+      "note": "18 numeric PhiUSIIL columns computable from the URL string alone."
+    },
+    "threatlens_static": {
+      "n_features": 26,
+      "columns": [
+        "url_length",
+        "hostname_length",
+        "path_length",
+        "query_length",
+        "is_ip_literal",
+        "https",
+        "port",
+        "hostname_dots",
+        "hyphens",
+        "hostname_hyphens",
+        "digits",
+        "subdomain_count",
+        "special_characters",
+        "percent_encoded_sequences",
+        "double_slash_in_path",
+        "punycode",
+        "suspicious_tld",
+        "shortener",
+        "keyword_count",
+        "query_parameter_count",
+        "has_query",
+        "at_in_path",
+        "hostname_entropy",
+        "scheme_port_mismatch",
+        "brand_in_hostname",
+        "brand_in_path"
+      ],
+      "note": "Deployable: backend URL extractor only, no network fetch. The best model in this tier is saved as the runtime artifact."
+    },
+    "all_numeric_upper_bound": {
+      "n_features": 50,
+      "columns": [
+        "URLLength",
+        "DomainLength",
+        "IsDomainIP",
+        "URLSimilarityIndex",
+        "CharContinuationRate",
+        "TLDLegitimateProb",
+        "URLCharProb",
+        "TLDLength",
+        "NoOfSubDomain",
+        "HasObfuscation",
+        "NoOfObfuscatedChar",
+        "ObfuscationRatio",
+        "NoOfLettersInURL",
+        "LetterRatioInURL",
+        "NoOfDegitsInURL",
+        "DegitRatioInURL",
+        "NoOfEqualsInURL",
+        "NoOfQMarkInURL",
+        "NoOfAmpersandInURL",
+        "NoOfOtherSpecialCharsInURL",
+        "SpacialCharRatioInURL",
+        "IsHTTPS",
+        "LineOfCode",
+        "LargestLineLength",
+        "HasTitle",
+        "DomainTitleMatchScore",
+        "URLTitleMatchScore",
+        "HasFavicon",
+        "Robots",
+        "IsResponsive",
+        "NoOfURLRedirect",
+        "NoOfSelfRedirect",
+        "HasDescription",
+        "NoOfPopup",
+        "NoOfiFrame",
+        "HasExternalFormSubmit",
+        "HasSocialNet",
+        "HasSubmitButton",
+        "HasHiddenFields",
+        "HasPasswordField",
+        "Bank",
+        "Pay",
+        "Crypto",
+        "HasCopyrightInfo",
+        "NoOfImage",
+        "NoOfCSS",
+        "NoOfJS",
+        "NoOfSelfRef",
+        "NoOfEmptyRef",
+        "NoOfExternalRef"
+      ],
+      "note": "Every numeric dataset column, including page-derived fields and the leaky URLSimilarityIndex/TLDLegitimateProb/URLCharProb scores. Upper bound, never deployed."
+    }
+  },
+  "split": {
+    "method": "GroupShuffleSplit on registrable domain",
+    "seed": 42,
+    "train": 166344,
+    "validation": 32254,
+    "test": 37163,
+    "train_domains": 118547,
+    "validation_domains": 25403,
+    "test_domains": 25403
+  },
+  "environment": {
+    "python": "3.14.0",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "scikit_learn": "1.9.1",
+    "pandas": "3.1.0",
+    "numpy": "2.3.4",
+    "joblib": "1.6.0"
+  },
+  "tiers": {
+    "dataset_url_only": [
+      {
+        "tier": "dataset_url_only",
+        "model": "hist_gradient_boosting",
+        "n_features": 18,
+        "fit_seconds": 12.22,
+        "validation": {
+          "accuracy": 0.997427,
+          "precision_macro": 0.997827,
+          "recall_macro": 0.996577,
+          "f1_macro": 0.997197,
+          "f1_weighted": 0.997425,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.996438,
+              "recall": 0.999565,
+              "f1": 0.997999,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.999216,
+              "recall": 0.993589,
+              "f1": 0.996395,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20702,
+              9
+            ],
+            [
+              74,
+              11469
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.998214
+        },
+        "test": {
+          "accuracy": 0.997767,
+          "precision_macro": 0.997895,
+          "recall_macro": 0.997622,
+          "f1_macro": 0.997755,
+          "f1_weighted": 0.997766,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.996139,
+              "recall": 0.999698,
+              "f1": 0.997915,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.999652,
+              "recall": 0.995547,
+              "f1": 0.997595,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19867,
+              6
+            ],
+            [
+              77,
+              17213
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.998649
+        }
+      },
+      {
+        "tier": "dataset_url_only",
+        "model": "linear_svm",
+        "n_features": 18,
+        "fit_seconds": 13.0,
+        "validation": {
+          "accuracy": 0.997365,
+          "precision_macro": 0.997877,
+          "recall_macro": 0.996395,
+          "f1_macro": 0.997129,
+          "f1_weighted": 0.997363,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.996104,
+              "recall": 0.999807,
+              "f1": 0.997952,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.999651,
+              "recall": 0.992983,
+              "f1": 0.996306,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20707,
+              4
+            ],
+            [
+              81,
+              11462
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.997604
+        },
+        "test": {
+          "accuracy": 0.997175,
+          "precision_macro": 0.997355,
+          "recall_macro": 0.996979,
+          "f1_macro": 0.99716,
+          "f1_weighted": 0.997174,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.994942,
+              "recall": 0.999799,
+              "f1": 0.997365,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.999767,
+              "recall": 0.994158,
+              "f1": 0.996955,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19869,
+              4
+            ],
+            [
+              101,
+              17189
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.998614
+        }
+      },
+      {
+        "tier": "dataset_url_only",
+        "model": "random_forest",
+        "n_features": 18,
+        "fit_seconds": 20.33,
+        "validation": {
+          "accuracy": 0.9969,
+          "precision_macro": 0.997184,
+          "recall_macro": 0.996071,
+          "f1_macro": 0.996623,
+          "f1_weighted": 0.996898,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.996196,
+              "recall": 0.998986,
+              "f1": 0.997589,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.998172,
+              "recall": 0.993156,
+              "f1": 0.995657,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20690,
+              21
+            ],
+            [
+              79,
+              11464
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.998135
+        },
+        "test": {
+          "accuracy": 0.997417,
+          "precision_macro": 0.997537,
+          "recall_macro": 0.997276,
+          "f1_macro": 0.997404,
+          "f1_weighted": 0.997416,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.995888,
+              "recall": 0.999296,
+              "f1": 0.997589,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.999187,
+              "recall": 0.995257,
+              "f1": 0.997218,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19859,
+              14
+            ],
+            [
+              82,
+              17208
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.998573
+        }
+      },
+      {
+        "tier": "dataset_url_only",
+        "model": "logistic_regression",
+        "n_features": 18,
+        "fit_seconds": 1.32,
+        "validation": {
+          "accuracy": 0.996466,
+          "precision_macro": 0.997123,
+          "recall_macro": 0.995196,
+          "f1_macro": 0.996147,
+          "f1_weighted": 0.996462,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.994858,
+              "recall": 0.999662,
+              "f1": 0.997254,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.999388,
+              "recall": 0.99073,
+              "f1": 0.99504,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20704,
+              7
+            ],
+            [
+              107,
+              11436
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.997638
+        },
+        "test": {
+          "accuracy": 0.996233,
+          "precision_macro": 0.996498,
+          "recall_macro": 0.995955,
+          "f1_macro": 0.996213,
+          "f1_weighted": 0.996232,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.993054,
+              "recall": 0.99995,
+              "f1": 0.99649,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.999942,
+              "recall": 0.991961,
+              "f1": 0.995935,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19872,
+              1
+            ],
+            [
+              139,
+              17151
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.998294
+        }
+      }
+    ],
+    "threatlens_static": [
+      {
+        "tier": "threatlens_static",
+        "model": "hist_gradient_boosting",
+        "n_features": 26,
+        "fit_seconds": 12.33,
+        "validation": {
+          "accuracy": 0.983289,
+          "precision_macro": 0.981829,
+          "recall_macro": 0.98181,
+          "f1_macro": 0.98182,
+          "f1_weighted": 0.983289,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.986964,
+              "recall": 0.987012,
+              "f1": 0.986988,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.976694,
+              "recall": 0.976609,
+              "f1": 0.976652,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20442,
+              269
+            ],
+            [
+              270,
+              11273
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.994527
+        },
+        "test": {
+          "accuracy": 0.952453,
+          "precision_macro": 0.95651,
+          "recall_macro": 0.949769,
+          "f1_macro": 0.951927,
+          "f1_weighted": 0.952276,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.927472,
+              "recall": 0.988376,
+              "f1": 0.956956,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.985549,
+              "recall": 0.911163,
+              "f1": 0.946897,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19642,
+              231
+            ],
+            [
+              1536,
+              15754
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.987802
+        }
+      },
+      {
+        "tier": "threatlens_static",
+        "model": "random_forest",
+        "n_features": 26,
+        "fit_seconds": 25.59,
+        "validation": {
+          "accuracy": 0.981119,
+          "precision_macro": 0.978594,
+          "recall_macro": 0.980427,
+          "f1_macro": 0.979499,
+          "f1_weighted": 0.981137,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.987676,
+              "recall": 0.982859,
+              "f1": 0.985262,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.969512,
+              "recall": 0.977995,
+              "f1": 0.973735,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20356,
+              355
+            ],
+            [
+              254,
+              11289
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.993856
+        },
+        "test": {
+          "accuracy": 0.949385,
+          "precision_macro": 0.953232,
+          "recall_macro": 0.946743,
+          "f1_macro": 0.948834,
+          "f1_weighted": 0.949203,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.925383,
+              "recall": 0.984753,
+              "f1": 0.954145,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.98108,
+              "recall": 0.908733,
+              "f1": 0.943522,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19570,
+              303
+            ],
+            [
+              1578,
+              15712
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.982747
+        }
+      },
+      {
+        "tier": "threatlens_static",
+        "model": "linear_svm",
+        "n_features": 26,
+        "fit_seconds": 14.75,
+        "validation": {
+          "accuracy": 0.973678,
+          "precision_macro": 0.972865,
+          "recall_macro": 0.969744,
+          "f1_macro": 0.97127,
+          "f1_weighted": 0.973634,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.975623,
+              "recall": 0.983584,
+              "f1": 0.979587,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.970107,
+              "recall": 0.955904,
+              "f1": 0.962953,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20371,
+              340
+            ],
+            [
+              509,
+              11034
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.987239
+        },
+        "test": {
+          "accuracy": 0.931276,
+          "precision_macro": 0.938286,
+          "recall_macro": 0.927356,
+          "f1_macro": 0.930257,
+          "f1_weighted": 0.930843,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.897571,
+              "recall": 0.983747,
+              "f1": 0.938685,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.979001,
+              "recall": 0.870966,
+              "f1": 0.921829,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19550,
+              323
+            ],
+            [
+              2231,
+              15059
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.982697
+        }
+      },
+      {
+        "tier": "threatlens_static",
+        "model": "logistic_regression",
+        "n_features": 26,
+        "fit_seconds": 2.2,
+        "validation": {
+          "accuracy": 0.972686,
+          "precision_macro": 0.971576,
+          "recall_macro": 0.968875,
+          "f1_macro": 0.9702,
+          "f1_weighted": 0.972646,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.975357,
+              "recall": 0.98228,
+              "f1": 0.978806,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 0.967796,
+              "recall": 0.955471,
+              "f1": 0.961594,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20344,
+              367
+            ],
+            [
+              514,
+              11029
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.987637
+        },
+        "test": {
+          "accuracy": 0.936496,
+          "precision_macro": 0.942201,
+          "recall_macro": 0.933045,
+          "f1_macro": 0.935652,
+          "f1_weighted": 0.936165,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.906428,
+              "recall": 0.98269,
+              "f1": 0.94302,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 0.977974,
+              "recall": 0.883401,
+              "f1": 0.928285,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19529,
+              344
+            ],
+            [
+              2016,
+              15274
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 0.98428
+        }
+      }
+    ],
+    "all_numeric_upper_bound": [
+      {
+        "tier": "all_numeric_upper_bound",
+        "model": "random_forest",
+        "n_features": 50,
+        "fit_seconds": 34.25,
+        "validation": {
+          "accuracy": 0.999938,
+          "precision_macro": 0.999952,
+          "recall_macro": 0.999913,
+          "f1_macro": 0.999933,
+          "f1_weighted": 0.999938,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.999903,
+              "recall": 1.0,
+              "f1": 0.999952,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 0.999827,
+              "f1": 0.999913,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20711,
+              0
+            ],
+            [
+              2,
+              11541
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 1.0
+        },
+        "test": {
+          "accuracy": 1.0,
+          "precision_macro": 1.0,
+          "recall_macro": 1.0,
+          "f1_macro": 1.0,
+          "f1_weighted": 1.0,
+          "per_class": {
+            "legitimate": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19873,
+              0
+            ],
+            [
+              0,
+              17290
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 1.0
+        }
+      },
+      {
+        "tier": "all_numeric_upper_bound",
+        "model": "hist_gradient_boosting",
+        "n_features": 50,
+        "fit_seconds": 14.35,
+        "validation": {
+          "accuracy": 0.999938,
+          "precision_macro": 0.999952,
+          "recall_macro": 0.999913,
+          "f1_macro": 0.999933,
+          "f1_weighted": 0.999938,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.999903,
+              "recall": 1.0,
+              "f1": 0.999952,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 0.999827,
+              "f1": 0.999913,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20711,
+              0
+            ],
+            [
+              2,
+              11541
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 1.0
+        },
+        "test": {
+          "accuracy": 1.0,
+          "precision_macro": 1.0,
+          "recall_macro": 1.0,
+          "f1_macro": 1.0,
+          "f1_weighted": 1.0,
+          "per_class": {
+            "legitimate": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19873,
+              0
+            ],
+            [
+              0,
+              17290
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 1.0
+        }
+      },
+      {
+        "tier": "all_numeric_upper_bound",
+        "model": "logistic_regression",
+        "n_features": 50,
+        "fit_seconds": 3.05,
+        "validation": {
+          "accuracy": 0.999907,
+          "precision_macro": 0.999928,
+          "recall_macro": 0.99987,
+          "f1_macro": 0.999899,
+          "f1_weighted": 0.999907,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.999855,
+              "recall": 1.0,
+              "f1": 0.999928,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 0.99974,
+              "f1": 0.99987,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20711,
+              0
+            ],
+            [
+              3,
+              11540
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 0.999999
+        },
+        "test": {
+          "accuracy": 0.999865,
+          "precision_macro": 0.999874,
+          "recall_macro": 0.999855,
+          "f1_macro": 0.999865,
+          "f1_weighted": 0.999865,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.999748,
+              "recall": 1.0,
+              "f1": 0.999874,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 0.999711,
+              "f1": 0.999855,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19873,
+              0
+            ],
+            [
+              5,
+              17285
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 1.0
+        }
+      },
+      {
+        "tier": "all_numeric_upper_bound",
+        "model": "linear_svm",
+        "n_features": 50,
+        "fit_seconds": 8.79,
+        "validation": {
+          "accuracy": 0.999876,
+          "precision_macro": 0.999903,
+          "recall_macro": 0.999827,
+          "f1_macro": 0.999865,
+          "f1_weighted": 0.999876,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.999807,
+              "recall": 1.0,
+              "f1": 0.999903,
+              "support": 20711
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 0.999653,
+              "f1": 0.999827,
+              "support": 11543
+            }
+          },
+          "confusion_matrix": [
+            [
+              20711,
+              0
+            ],
+            [
+              4,
+              11539
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 32254,
+          "roc_auc": 1.0
+        },
+        "test": {
+          "accuracy": 0.999946,
+          "precision_macro": 0.99995,
+          "recall_macro": 0.999942,
+          "f1_macro": 0.999946,
+          "f1_weighted": 0.999946,
+          "per_class": {
+            "legitimate": {
+              "precision": 0.999899,
+              "recall": 1.0,
+              "f1": 0.99995,
+              "support": 19873
+            },
+            "phishing": {
+              "precision": 1.0,
+              "recall": 0.999884,
+              "f1": 0.999942,
+              "support": 17290
+            }
+          },
+          "confusion_matrix": [
+            [
+              19873,
+              0
+            ],
+            [
+              2,
+              17288
+            ]
+          ],
+          "labels": [
+            "legitimate",
+            "phishing"
+          ],
+          "support": 37163,
+          "roc_auc": 1.0
+        }
+      }
+    ]
+  },
+  "selected_model": "hist_gradient_boosting",
+  "selected_refit_seconds": 14.04,
+  "selected_test_metrics": {
+    "accuracy": 0.951995,
+    "precision_macro": 0.95637,
+    "recall_macro": 0.949191,
+    "f1_macro": 0.951446,
+    "f1_weighted": 0.951805,
+    "per_class": {
+      "legitimate": {
+        "precision": 0.925804,
+        "recall": 0.989534,
+        "f1": 0.956608,
+        "support": 19873
+      },
+      "phishing": {
+        "precision": 0.986936,
+        "recall": 0.908849,
+        "f1": 0.946284,
+        "support": 17290
+      }
+    },
+    "confusion_matrix": [
+      [
+        19665,
+        208
+      ],
+      [
+        1576,
+        15714
+      ]
+    ],
+    "labels": [
+      "legitimate",
+      "phishing"
+    ],
+    "support": 37163,
+    "roc_auc": 0.988086
+  },
+  "artifact": "ml/models/url_model.joblib",
+  "artifact_bytes": 293355
+}

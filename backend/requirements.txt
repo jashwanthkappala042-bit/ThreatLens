@@ -1,0 +1,33 @@
+# ThreatLens backend dependencies
+# Core web framework
+Flask>=3.1,<4
+Flask-JWT-Extended>=4.7,<5
+Flask-Cors>=5,<7
+python-dotenv>=1.0,<2
+
+# Persistence
+SQLAlchemy>=2.0,<3
+
+# URL / website analysis
+requests>=2.32,<3
+beautifulsoup4>=4.12,<5
+
+# Image / QR analysis
+Pillow>=10,<14
+opencv-python-headless>=4.10,<6
+
+# Reporting
+reportlab>=4.2,<5
+
+# Machine learning (optional at runtime, required to train)
+scikit-learn>=1.4,<2
+pandas>=2.2
+numpy>=1.26
+
+# Tests
+pytest>=8,<10
+
+# Optional capabilities (install separately, see README):
+#   pyzbar            - alternate QR decoder (requires system zbar library)
+#   easyocr           - OCR support (downloads model weights on first use)
+#   playwright        - isolated Chromium browser analysis (run: playwright install chromium)
