@@ -4,7 +4,7 @@ This document describes the threat model, implemented controls, and the residual
 
 ## Scope and threat model
 
-ThreatLens is a **single-user, local development application**. It is not hardened for public deployment. The relevant threats are:
+ThreatLens is a **small, single-process application** with a documented deployment path, but it is not hardened for hostile, high-traffic public exposure. The relevant threats are:
 
 1. A user submitting a malicious URL that tries to reach internal services (SSRF).
 2. A malicious scanned page serving oversized responses, slow responses, redirect loops or hostile HTML.
@@ -82,7 +82,7 @@ Implemented in `app/utils/url_safety.py` and `app/scanners/http_client.py`:
 - In-process sliding-window limits per IP: auth 10/min, scans 20/min, community 20/min, complaints 10/min.
 - Limits are configurable through `RATE_LIMIT_*`.
 - Scan timeouts and byte caps bound outbound work. Email/image URL enrichment analyses at most three URLs.
-- SQLite is used with WAL mode for local concurrency.
+- SQLite is used with WAL mode for local concurrency. Deployed instances use PostgreSQL, where the engine enables `pool_pre_ping` and recycles connections before hosted idle timeouts.
 
 ### Audit logging
 

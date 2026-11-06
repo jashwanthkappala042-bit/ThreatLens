@@ -45,6 +45,20 @@ def _sqlite_url(path: Path) -> str:
     return "sqlite:///" + path.as_posix()
 
 
+def _database_url() -> str:
+    """Return a SQLAlchemy-ready database URL.
+
+    Render (and Heroku) still expose ``postgres://`` for some databases, which
+    SQLAlchemy 2 refuses to parse. Normalise it to ``postgresql://``.
+    """
+    raw = os.getenv("DATABASE_URL", "").strip()
+    if not raw:
+        return _sqlite_url(BACKEND_DIR / "instance" / "threatlens.db")
+    if raw.startswith("postgres://"):
+        return "postgresql://" + raw[len("postgres://") :]
+    return raw
+
+
 class Config:
     ENV = os.getenv("FLASK_ENV", "development")
     DEBUG = _bool("FLASK_DEBUG", False)
@@ -57,10 +71,7 @@ class Config:
 
     # --- Storage ------------------------------------------------------------
     STORAGE_DIR = Path(os.getenv("STORAGE_DIR", BACKEND_DIR / "storage"))
-    DATABASE_URL = os.getenv(
-        "DATABASE_URL",
-        _sqlite_url(BACKEND_DIR / "instance" / "threatlens.db"),
-    )
+    DATABASE_URL = _database_url()
     AUTO_INIT_DB = _bool("AUTO_INIT_DB", True)
 
     # --- HTTP / CORS --------------------------------------------------------

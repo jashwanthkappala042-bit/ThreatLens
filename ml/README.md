@@ -106,7 +106,47 @@ partitions.
 Algorithms compared in every tier: logistic regression, random forest,
 calibrated linear SVM and histogram gradient boosting.
 
-> Results are filled in from `ml/reports/url_comparison.json` after the full run.
+After dropping 34 rows whose URL could not be parsed, **235,761** rows remain.
+Grouped split sizes are 166,344 / 32,254 / 37,163 (train / validation / test)
+over 118,547 / 25,403 / 25,403 domains.
+
+### Deployable tier (`threatlens_static`) — the number that matters
+
+| Model | Val macro-F1 | Test macro-F1 | Test accuracy | Test AUC |
+| --- | --- | --- | --- | --- |
+| **hist gradient boosting** (selected) | **0.9818** | **0.9519** | 0.9525 | 0.9878 |
+| random forest | 0.9795 | 0.9488 | 0.9494 | 0.9827 |
+| logistic regression | 0.9702 | 0.9357 | 0.9365 | 0.9843 |
+| calibrated linear SVM | 0.9713 | 0.9303 | 0.9313 | 0.9827 |
+
+The selected model was refit on train + validation. Its single evaluation on the
+untouched test split:
+
+| Class | Precision | Recall | F1 | Support |
+| --- | --- | --- | --- | --- |
+| legitimate | 0.9258 | 0.9895 | 0.9566 | 19,873 |
+| phishing | 0.9869 | 0.9088 | 0.9463 | 17,290 |
+
+Refit artifact totals: accuracy **0.9520**, macro-F1 **0.9514**, AUC **0.9881**.
+Confusion matrix (rows = truth, columns = prediction):
+
+```
+[[19665,   208],
+ [ 1576, 15714]]
+```
+
+### Tier comparison (best model per tier)
+
+| Tier | Best model | Val macro-F1 | Test macro-F1 | Interpretation |
+| --- | --- | --- | --- | --- |
+| `threatlens_static` | hist gradient boosting | 0.9818 | **0.9519** | What a live scan can achieve |
+| `dataset_url_only` | hist gradient boosting | 0.9972 | 0.9978 | Uses PhiUSIIL-only columns; not reproducible at runtime |
+| `all_numeric_upper_bound` | random forest / HGB | 0.9999 | 1.0000 | Leakage demonstration, never deployable |
+
+The jump from 0.952 to ~0.998 shows how much of the published PhiUSIIL accuracy
+comes from columns that cannot be computed before fetching a page (or that
+encode the corpus label distribution). The report keeps these tiers separate
+rather than quoting the inflated number.
 
 ---
 
@@ -131,12 +171,40 @@ Duplicates are removed by SHA-1 of the normalised text; duplicate groups with
 conflicting labels are dropped instead of guessed. Splits are stratified
 70/15/15, and exact duplicates never cross splits.
 
-Algorithms compared: word TF-IDF (1–2 grams) + logistic regression, word TF-IDF
+Algorithms compared: word TF-IDF (1-2 grams) + logistic regression, word TF-IDF
++ calibrated linear SVM, character TF-IDF (2-4 grams) + logistic regression, and
+word TF-IDF + complement naive Bayes.
 
-- calibrated linear SVM, character TF-IDF (2–4 grams) + logistic regression, and
-  word TF-IDF + complement naive Bayes.
+Final corpus after deduplication: **199,816** unique texts (106,075 legitimate /
+93,741 phishing), split 139,871 / 29,972 / 29,973.
 
-> Results are filled in from `ml/reports/email_comparison.json` after the full run.
+| Model | Val macro-F1 | Test macro-F1 | Test accuracy | Test AUC |
+| --- | --- | --- | --- | --- |
+| **word TF-IDF + calibrated linear SVM** (selected) | **0.9863** | 0.9864 | 0.9864 | 0.9987 |
+| word TF-IDF + logistic regression | 0.9848 | 0.9850 | 0.9851 | 0.9986 |
+| char TF-IDF + logistic regression | 0.9823 | 0.9803 | 0.9804 | 0.9979 |
+| word TF-IDF + complement naive Bayes | 0.9694 | 0.9701 | 0.9703 | 0.9972 |
+
+The selected model was refit on train + validation and evaluated once:
+
+| Class | Precision | Recall | F1 | Support |
+| --- | --- | --- | --- | --- |
+| legitimate | 0.9885 | 0.9862 | 0.9874 | 15,912 |
+| phishing | 0.9845 | 0.9871 | 0.9858 | 14,061 |
+
+Refit artifact totals: accuracy **0.9866**, macro-F1 **0.9866**, AUC **0.9988**.
+Confusion matrix (rows = truth, columns = prediction):
+
+```
+[[15693,   219],
+ [  182, 13879]]
+```
+
+### Why character n-grams were kept
+
+The character model is the most robust to obfuscation, but it scored lower here
+because the corpus is already normalised into a consistent token format. Both
+word and character models are trained; only the validation winner is served.
 
 ---
 
@@ -156,7 +224,9 @@ Selection is by validation macro-F1. Results on the untouched test split:
 | word TF-IDF + logistic regression                  | 0.8556       | 0.8861        | 0.9653        | 0.9791         |
 | word TF-IDF + complement naive Bayes               | 0.8348       | 0.8838        | 0.9642        | 0.9703         |
 
-The selected model was refitted on train + validation. Its test per-class scores:
+The selected model was refitted on train + validation and evaluated once on the
+untouched test split: accuracy **0.9698**, macro-F1 **0.8989**, AUC-OVR
+**0.9885**. Its test per-class scores:
 
 | Class    | Precision | Recall | F1     | Support |
 | -------- | --------- | ------ | ------ | ------- |

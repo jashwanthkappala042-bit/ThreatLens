@@ -58,7 +58,7 @@ If a result matters, verify it independently. For anything involving money, cred
 
 ### Optional machine learning
 
-- **No dataset and no trained model ship with ThreatLens.** When no artifact is present, the ML stage reports `available: false` and no prediction is invented. Datasets, artifacts and training logs are gitignored.
+- **The three trained artifacts ship with ThreatLens; the raw datasets do not.** When an artifact is missing or unreadable, the ML stage reports `available: false` and no prediction is invented. Datasets and training logs are gitignored.
 - Three local artifacts are supported: a static-feature URL classifier, a binary email classifier, and a three-class SMS classifier (`ham` / `spam` / `smishing`). They are trained by the reproducible scripts in `ml/` on CC BY 4.0 public corpora with recorded SHA-256 fingerprints.
 - Any metrics printed during training describe one split of one dataset. They are not real-world detection rates and are not displayed as calibrated probabilities. The URL benchmark is grouped by domain; the email split is deduplicated and stratified.
 - The SMS model is only applied to body-only messages at or below `SMS_MAX_CHARS`. It was trained on 5,947 short messages collected before 2022, so its vocabulary and class balance are dated, and the corpus is small.
@@ -113,20 +113,20 @@ If a result matters, verify it independently. For anything involving money, cred
 
 ## 3. Security and operational limitations
 
-- The app is designed for **local use**. It is not hardened for internet exposure. Do not deploy it publicly without the changes listed in [security.md](security.md).
+- The app is designed for **local use**, but a deployment configuration is included (`render.yaml`, `frontend/vercel.json`, [deployment.md](deployment.md)). Read it before exposing an instance: set real secrets, use PostgreSQL, restrict CORS, and keep the single-worker/rate-limit caveat in mind.
 - The rate limiter is in-process, resets on restart, is not shared across workers, and trusts `X-Forwarded-For` for client identity. Without a trusted proxy, that header is spoofable.
 - No Content-Security-Policy is configured. The JWT is in `localStorage`. There is no CSRF layer because bearer tokens, not cookies, are used; switching to cookies would require one.
 - DNS rebinding is a known residual risk. Validated IPs are not pinned at the socket layer.
 - Default development secrets are used if `.env` is missing. The app warns but still starts.
-- SQLite is suitable for one local process, not high concurrency. There are no migrations; tables are created with `create_all`. Schema changes require manual handling or a fresh database.
+- SQLite is suitable for one local process, not high concurrency. Hosted deployments should use PostgreSQL (`DATABASE_URL`); Render's filesystem is ephemeral. There are no migrations; tables are created with `create_all`. Schema changes require manual handling or a fresh database.
 - Audit logs are best-effort, stored in the same database, and not tamper-evident.
 - There is no backup, restore, log rotation or retention automation.
 - Optional dependencies (Playwright, EasyOCR, pyzbar) are not installed by default and their system requirements vary. Enabling a flag without installing the dependency yields an `unavailable` stage, not a silent fake result.
-- No dependency vulnerability scanning, lockfile enforcement, container image, CI pipeline or deployment configuration is included.
+- No dependency vulnerability scanning, lockfile enforcement, container image or CI pipeline is included. Host configuration is documented in [deployment.md](deployment.md).
 
 ## 4. Honest verification status
 
-- Backend tests: **73 passed** at the time of writing (`pytest backend/tests -q`).
+- Backend tests: **82 passed** at the time of writing (`pytest backend/tests -q`).
 - Frontend production build: **succeeds** with a Vite chunk-size warning (single JS bundle ≈ 948 kB, ≈ 271 kB gzip). No code splitting.
 - There is **no frontend unit/e2e test suite** and **no automated accessibility or cross-browser test suite**.
 - Manual smoke testing covered the main flows: landing, auth, signed-in and anonymous scans, email scan, QR/image scan, result tabs, dashboard, history, community, moderation, complaint draft generation/download, profile update, theme switch and scan report PDF.

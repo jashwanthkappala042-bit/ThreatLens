@@ -4,8 +4,8 @@ ThreatLens is a local, two-process application:
 
 - `frontend/` — React 19 single-page app built with Vite. It handles presentation, routing, auth state and file selection.
 - `backend/` — Flask API with JWT auth, SQLAlchemy persistence and the analysis engines.
-- `ml/` — optional training scripts. No datasets or model artifacts ship with the project.
-- SQLite — local database file at `backend/instance/threatlens.db` by default.
+- `ml/` - training scripts plus the three committed model artifacts. Raw datasets are not committed.
+- Database - SQLite file at `backend/instance/threatlens.db` locally; any `DATABASE_URL` (PostgreSQL) when deployed.
 - `backend/storage/complaints/` — locally generated complaint-draft PDFs.
 
 ```
@@ -19,7 +19,7 @@ Flask API
   ├── scanners/      URL, email, image pipelines
   ├── detection/     findings, URL features, ML loader, risk policy
   ├── utils/         URL safety, text helpers
-  └── SQLAlchemy ──► SQLite
+  └── SQLAlchemy ──► SQLite (local) / PostgreSQL (deployed)
 ```
 
 ## Request flow
@@ -37,7 +37,7 @@ Flask API
 | --- | --- |
 | `app/__init__.py` | App factory, CORS, JWT, error envelopes, security headers, health, CLI commands |
 | `app/config.py` | Environment-driven configuration and capability flags |
-| `app/database.py` | Engine, request-scoped sessions, SQLite pragmas |
+| `app/database.py` | Engine, request-scoped sessions, SQLite pragmas, Postgres pool recycling |
 | `app/models.py` | `User`, `Scan`, `ScanFinding`, `CommunityPost`, `Comment`, `CommunityReport`, `ComplaintDraft`, `AuditLog` |
 | `app/security.py` | Rate limiter, password/name validation, audit log, current-user helpers |
 | `app/routes/scans.py` | Scan submission, analysis, status, PDF, history |

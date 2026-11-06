@@ -48,6 +48,10 @@ def init_engine(database_url: str) -> Engine:
             # One shared connection keeps an in-memory DB visible to all sessions.
             engine_kwargs["poolclass"] = StaticPool
             connect_args["timeout"] = 30
+    elif database_url.startswith("postgresql"):
+        # Hosted Postgres (Neon, Supabase, Render) closes idle connections.
+        # Recycle before that happens and verify connections on checkout.
+        engine_kwargs["pool_recycle"] = 280
 
     _engine = create_engine(
         database_url,

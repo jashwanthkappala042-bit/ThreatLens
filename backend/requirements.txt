@@ -1,31 +1,48 @@
-# ThreatLens backend dependencies
-# Core web framework
-Flask>=3.1,<4
-Flask-JWT-Extended>=4.7,<5
-Flask-Cors>=5,<7
-python-dotenv>=1.0,<2
+# ThreatLens backend dependencies.
+# Used for local development and for the Render build.
+#
+# Direct dependencies are pinned to the versions this repository was tested
+# with. Every pin below has a CPython 3.14 Linux wheel (or is pure Python), so
+# Render does not need a compiler. After changing a pin, re-run the backend
+# tests and a scan before deploying.
+#
+# The scikit-learn/joblib versions must match the ones that produced
+# ml/models/*.joblib. Changing them can make pickled estimators fail to load or
+# change inference behaviour.
 
-# Persistence
-SQLAlchemy>=2.0,<3
+# --- Web framework ---------------------------------------------------------
+Flask==3.1.3
+Flask-JWT-Extended==4.7.4
+Flask-Cors==6.0.5
+python-dotenv==1.2.4
 
-# URL / website analysis
-requests>=2.32,<3
-beautifulsoup4>=4.12,<5
+# --- Production server -----------------------------------------------------
+gunicorn==23.0.0
 
-# Image / QR analysis
-Pillow>=10,<14
-opencv-python-headless>=4.10,<6
+# --- Persistence -----------------------------------------------------------
+SQLAlchemy==2.1.6
+# PostgreSQL driver (Render/Neon/Supabase). SQLite needs no extra driver.
+psycopg2-binary==2.9.11
 
-# Reporting
-reportlab>=4.2,<5
+# --- URL / website analysis ------------------------------------------------
+requests==2.34.2
+beautifulsoup4==4.15.0
 
-# Machine learning (optional at runtime, required to train)
-scikit-learn>=1.4,<2
-pandas>=2.2
-numpy>=1.26
+# --- Image / QR analysis ---------------------------------------------------
+Pillow==12.3.0
+opencv-python-headless==4.14.0.94
 
-# Tests
-pytest>=8,<10
+# --- Reporting -------------------------------------------------------------
+reportlab==4.5.1
+
+# --- Machine learning ------------------------------------------------------
+scikit-learn==1.9.1
+joblib==1.6.0
+numpy==2.5.4
+pandas==3.1.0
+
+# --- Tests -----------------------------------------------------------------
+pytest==9.2.0
 
 # Optional capabilities (install separately, see README):
 #   pyzbar            - alternate QR decoder (requires system zbar library)

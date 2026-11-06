@@ -1,0 +1,47 @@
+# Render Blueprint for the ThreatLens API.
+#
+# Deploy with: Render Dashboard -> New -> Blueprint -> connect this repository.
+# Render reads this file and creates the web service.
+#
+# The frontend is deployed separately on Vercel (see frontend/vercel.json and
+# docs/deployment.md). This backend must be deployed first so you can copy its
+# public URL into the frontend's VITE_API_BASE variable.
+
+services:
+  - type: web
+    name: threatlens-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    # One worker is deliberate: the rate limiter is in-process and every extra
+    # worker loads another copy of the ML models (free plan has 512 MB RAM).
+    startCommand: gunicorn --workers 1 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT wsgi:app
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      # Pinned because the joblib artifacts were produced with this version.
+      - key: PYTHON_VERSION
+        value: "3.14.10"
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: "false"
+      - key: AUTO_INIT_DB
+        value: "true"
+      # Generated once by Render; keep them stable across deploys.
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      # Set these in the Render dashboard when prompted (sync: false).
+      # CORS_ORIGINS: comma-separated frontend origins, e.g.
+      #   https://threatlens.vercel.app,https://threatlens-git-main-you.vercel.app
+      - key: CORS_ORIGINS
+        sync: false
+      # PostgreSQL URL from Neon/Supabase/Render Postgres, e.g.
+      #   postgresql://user:password@host/dbname?sslmode=require
+      # Leave unset ONLY for a throwaway demo: SQLite on Render is deleted on
+      # every deploy and whenever the free service spins down.
+      - key: DATABASE_URL
+        sync: false

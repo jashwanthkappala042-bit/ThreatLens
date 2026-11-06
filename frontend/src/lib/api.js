@@ -23,7 +23,9 @@ const baseURL = import.meta.env.VITE_API_BASE || "";
 
 export const http = axios.create({
   baseURL,
-  timeout: 45_000,
+  // Generous because a free Render instance can take ~1 minute to wake from
+  // its 15-minute spin-down. Image scans override this with 90 s below.
+  timeout: 75_000,
 });
 
 http.interceptors.request.use((config) => {
@@ -70,7 +72,7 @@ http.interceptors.response.use(
     }
     return Promise.reject(
       new ApiError(
-        "Could not reach the ThreatLens API. Confirm the backend is running on port 5000.",
+        "Could not reach the ThreatLens API. Check your connection and try again; a free hosted instance may be waking up.",
         { code: "network_error" },
       ),
     );

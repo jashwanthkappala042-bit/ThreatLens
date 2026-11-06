@@ -16,7 +16,7 @@ ThreatLens is a local, full-stack phishing and cyber-threat analysis app. It acc
 - **Email/message scanner** — urgency, threats, credential requests, payment lures, impersonation, obfuscation and formatting heuristics, plus analysis of up to three extracted URLs.
 - **Image scanner** — file-signature and pixel validation, QR decoding with OpenCV (optional pyzbar fallback), optional EasyOCR text extraction, and URL analysis of decoded content. Images are never stored.
 - **Explainable risk engine** — category grouping, diminishing returns, capped score, conservative floors, thresholds, a decision trace, and explicit limitations. Missing evidence produces `unknown`/inconclusive, never a fabricated “safe”.
-- **Optional local ML** — three locally trained classifiers (static-feature URL, binary email, three-class SMS) load only from artifacts produced by `ml/`. **No dataset or model artifact is committed to the repository**; when an artifact is missing the ML stage reports itself as unavailable.
+- **Optional local ML** - three locally trained classifiers (static-feature URL, binary email, three-class SMS). The datasets are not committed, but the three trained artifacts are (11.85 MB total) so a fresh clone works without retraining. When an artifact is missing the ML stage reports itself as unavailable.
 
 ### Accounts and workspace
 
@@ -51,7 +51,7 @@ ThreatLens is a local, full-stack phishing and cyber-threat analysis app. It acc
 | --- | --- |
 | Frontend | React 19, JavaScript, Vite 6, React Router 7, Tailwind CSS 3, Axios, Lucide, Recharts |
 | Backend | Python, Flask 3, Flask-JWT-Extended, Flask-CORS, SQLAlchemy 2 |
-| Database | SQLite (local file; `DATABASE_URL` configurable) |
+| Database | SQLite for local use; PostgreSQL via `DATABASE_URL` for deployment |
 | Analysis | Requests, BeautifulSoup, Pillow, OpenCV, optional Playwright/pyzbar/EasyOCR |
 | ML (optional) | scikit-learn, Pandas, NumPy, TF-IDF, Logistic Regression, Linear SVM, Random Forest, HistGradientBoosting, ComplementNB |
 | PDF | ReportLab |
@@ -76,7 +76,9 @@ threatlens/
     tests/           82 backend tests
     scripts/         make_admin.py
     storage/         generated complaint PDFs (local, gitignored)
-    run.py
+    run.py           local development server
+    wsgi.py          production entry point (gunicorn)
+    requirements.txt production dependencies
   frontend/
     src/
       components/    layout, guards, cards, badges, modals, evidence renderer
@@ -84,9 +86,11 @@ threatlens/
       lib/           API client, formatting helpers
       pages/         landing, auth, scanner, results, dashboard, history,
                      community, moderation, complaints, profile, about, 404
+    vercel.json      Vite build + SPA rewrite
   ml/                dataset downloader and reproducible training benchmarks
-                     (datasets, artifacts and logs are gitignored)
-  docs/              architecture, API, security and limitations references
+                     (raw datasets are gitignored; the 3 artifacts are committed)
+  docs/              architecture, API, security, limitations, deployment
+  render.yaml        Render Blueprint
   .env.example
 ```
 
@@ -158,7 +162,7 @@ npm run build
 npm run preview
 ```
 
-The build output is `frontend/dist`. The Flask backend does not serve the frontend bundle; use a static host or reverse proxy if you wire them together. This project is configured for local use only.
+The build output is `frontend/dist`. The Flask backend does not serve the frontend bundle: locally Vite proxies `/api`, and in production Vercel serves `dist` while calling the Render API. See [`docs/deployment.md`](docs/deployment.md).
 
 ---
 
@@ -170,7 +174,7 @@ All backend settings are environment variables. See [`.env.example`](.env.exampl
 | --- | --- | --- |
 | `SECRET_KEY` / `JWT_SECRET_KEY` | development placeholders | Signing keys; replace before any non-local use |
 | `JWT_ACCESS_TOKEN_EXPIRES` | `3600` | Token lifetime in seconds |
-| `DATABASE_URL` | `backend/instance/threatlens.db` | SQLAlchemy database URL |
+| `DATABASE_URL` | `backend/instance/threatlens.db` (SQLite) | SQLAlchemy URL; use PostgreSQL when deployed |
 | `STORAGE_DIR` | `backend/storage` | Complaint PDF storage |
 | `CORS_ORIGINS` | local Vite origins | Allowed browser origins |
 | `MAX_IMAGE_BYTES` / `MAX_IMAGE_PIXELS` | 5 MB / 25 MP | Upload limits |
@@ -200,8 +204,9 @@ Then set `ENABLE_OCR=true` and/or `ENABLE_BROWSER_SCAN=true` in `.env`. Review t
 
 ### Optional ML
 
-Three optional classifiers are trained from public, licensed corpora. Datasets,
-artifacts and training logs are gitignored; no model ships with the repository.
+Three optional classifiers are trained from public, licensed corpora. The raw
+datasets and training logs are gitignored; the three trained artifacts are
+committed so the app works from a fresh clone.
 
 ```powershell
 # 1. Download the datasets (CC BY 4.0) and write SHA-256 checksums.
@@ -218,7 +223,19 @@ Outputs:
 - `ml/models/url_model.joblib` — static-URL-feature model (no network fetch)
 - `ml/models/email_model.joblib` — TF-IDF text pipeline
 - `ml/models/sms_model.joblib` — three-class `ham`/`spam`/`smishing` pipeline
-- `ml/reports/*_comparison.json` — every compared model, split sizes and metrics
+- `ml/reports/*_comparison.json` - every compared model, split sizes and metrics
+
+Measured on the untouched test split after refitting the validation winner:
+
+| Task | Deployable test accuracy | Macro-F1 | AUC | Test rows |
+| --- | --- | --- | --- | --- |
+| URL (26 static features) | 0.9520 | 0.9514 | 0.9881 | 37,163 |
+| Email (word TF-IDF + linear SVM) | 0.9866 | 0.9866 | 0.9988 | 29,973 |
+| SMS (3-class) | 0.9698 | 0.8989 | 0.9885 (OVR) | 893 |
+
+The URL figure uses only features computable before fetching a page. Dataset-only
+and leaky-feature tiers score ~0.998-1.000 and are reported separately as an
+upper bound, not as deployable performance.
 
 The app also accepts your own CSV through the simpler
 `ml/train_email_model.py` and `ml/train_url_model.py` scripts
@@ -284,6 +301,36 @@ Rate limits are per-IP, in-process, sliding-window: auth 10/min, scans 20/min, c
 
 ---
 
+## Deployment
+
+The repository is deployment-ready for **Render** (API) and **Vercel** (frontend):
+
+- `render.yaml` - Render Blueprint: root `backend`, gunicorn on `wsgi:app`, one
+  worker, health check `/api/health`, Python 3.14.10.
+- `frontend/vercel.json` - Vite build, SPA rewrite, security headers.
+- `frontend/.env.example` - `VITE_API_BASE` template.
+- `docs/deployment.md` - full steps, environment variables, database options,
+  size breakdown, free-tier limits and troubleshooting.
+
+SQLite remains the local default, but it is **not durable on Render** because the
+filesystem is ephemeral. Use managed PostgreSQL (`DATABASE_URL`) for a hosted
+instance; Neon is the recommended free option. SQLite is still fine for local
+development or a VPS with a persistent disk.
+
+Quick path:
+
+1. Create a Neon Postgres database and copy its pooled connection string.
+2. Render → **New → Blueprint** → select the repo → enter `DATABASE_URL` and a
+   temporary `CORS_ORIGINS` → deploy.
+3. Vercel → import the repo → root directory `frontend` → set
+   `VITE_API_BASE=https://<your-render-service>.onrender.com` → deploy.
+4. Put the Vercel production domain into Render's `CORS_ORIGINS` and save.
+
+See [`docs/deployment.md`](docs/deployment.md) for the exact commands and the
+free-tier caveats (cold starts, RAM, ephemeral complaint PDFs).
+
+---
+
 ## Testing and verification
 
 Backend suite:
@@ -295,7 +342,7 @@ Backend suite:
 Recorded result for this build:
 
 ```
-73 passed in 29.09s
+82 passed in 15.08s
 ```
 
 Frontend production build:
@@ -305,7 +352,7 @@ cd frontend
 npm run build
 ```
 
-Recorded result: build succeeded (948.41 kB JS, 270.97 kB gzip; Vite emits a chunk-size warning only). No frontend unit/e2e test suite is included.
+Recorded result: build succeeded (949.10 kB JS, 271.16 kB gzip; Vite emits a chunk-size warning only). No frontend unit/e2e test suite is included.
 
 Manual browser smoke checks performed on this build covered: landing page, registration/login, theme switching, signed-in and anonymous URL scans, email scan, QR/image scan, all result tabs, dashboard charts, history, community post/share/detail, moderation queue, complaint prefill/generation/download, profile update, and scan-report PDF download. There is no automated browser test suite in the repository.
 
@@ -315,7 +362,7 @@ Manual browser smoke checks performed on this build covered: landing page, regis
 
 ThreatLens blocks private/loopback/link-local targets by default, revalidates every redirect hop, bounds timeouts and response sizes, does not forward credentials or arbitrary headers, and never persists uploaded images. Access control, rate limiting, input validation, safe rendering and audit logging are implemented.
 
-It is still a local development app. The important residuals:
+It remains a small project, not a hardened security product. The important residuals:
 
 - The JWT is stored in `localStorage`, so an XSS flaw would expose it. A strict CSP and httpOnly cookies would be stronger.
 - The in-process rate limiter is per-worker and resets on restart.
@@ -333,7 +380,8 @@ Read [`docs/security.md`](docs/security.md) and [`docs/limitations.md`](docs/lim
 ## Privacy
 
 - Scanned images are processed in memory and not stored. Metadata, extracted text, decoded URLs and findings are stored.
-- Scan text, URLs, findings and community content are stored in the local SQLite database.
+- Scan text, URLs, findings and community content are stored in the configured
+  database: SQLite locally, PostgreSQL when `DATABASE_URL` is set.
 - Complaint drafts and their PDFs are stored locally under `backend/storage/complaints`.
 - The only outbound network traffic is DNS resolution and fetching the URL being analyzed (plus optional Playwright/OCR model downloads if you enable them).
 - No analytics, telemetry or third-party reputation calls are included.
