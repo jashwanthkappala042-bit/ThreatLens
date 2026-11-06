@@ -45,17 +45,20 @@ def _sqlite_url(path: Path) -> str:
     return "sqlite:///" + path.as_posix()
 
 
-def _database_url() -> str:
+def _database_url(url: str | None = None) -> str:
     """Return a SQLAlchemy-ready database URL.
 
     Render (and Heroku) still expose ``postgres://`` for some databases, which
-    SQLAlchemy 2 refuses to parse. Normalise it to ``postgresql://``.
+    SQLAlchemy 2 refuses to parse. Normalise it to ``postgresql://`` and ensure
+    SQLAlchemy uses the installed ``psycopg2`` driver (``postgresql+psycopg2://``).
     """
-    raw = os.getenv("DATABASE_URL", "").strip()
+    raw = (os.getenv("DATABASE_URL", "") if url is None else url).strip()
     if not raw:
         return _sqlite_url(BACKEND_DIR / "instance" / "threatlens.db")
-    if raw.startswith("postgres://"):
-        return "postgresql://" + raw[len("postgres://") :]
+    if raw.lower().startswith("postgres://"):
+        raw = "postgresql://" + raw[len("postgres://") :]
+    if raw.lower().startswith("postgresql://"):
+        raw = "postgresql+psycopg2://" + raw[len("postgresql://") :]
     return raw
 
 
