@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from pathlib import Path
 from typing import Any
 
 from flask import current_app
@@ -133,42 +134,28 @@ def preview_extracted_urls(text: str) -> list[str]:
     return extract_urls(text, limit=10)
 
 
-def _summarise_model_status(status: dict[str, Any]) -> dict[str, Any]:
-    """Return a compact, honest status for the public health endpoint."""
-    if not status.get("available"):
-        return {"available": False, "reason": status.get("reason", "Model artifact unavailable.")}
-    metadata = status.get("metadata") or {}
-    metrics = status.get("metrics") or {}
-    headline = {
-        key: metrics.get(key)
-        for key in ("accuracy", "f1_macro", "roc_auc", "roc_auc_ovr_macro", "support")
-        if key in metrics
-    }
-    return {
-        "available": True,
-        "name": metadata.get("name"),
-        "task": metadata.get("task"),
-        "algorithm": metadata.get("algorithm"),
-        "dataset": metadata.get("dataset"),
-        "dataset_license": metadata.get("dataset_license"),
-        "trained_at": metadata.get("trained_at"),
-        "calibrated": bool(status.get("calibrated", False)),
-        "metrics": headline,
-    }
-
-
 def model_capabilities() -> dict[str, Any]:
-    from ..detection import ml
+    """Report configured model artifacts without loading them into memory."""
 
     config = current_app.config
+
+    def artifact_status(config_key: str) -> dict[str, Any]:
+        path_value = str(config.get(config_key, ""))
+        path = Path(path_value)
+
+        if path.is_file():
+            return {
+                "available": True,
+                "reason": "Model artifact found. Loading is deferred until inference.",
+            }
+
+        return {
+            "available": False,
+            "reason": "No trained model artifact is configured.",
+        }
+
     return {
-        "url_model": _summarise_model_status(
-            ml.model_status(str(config.get("URL_MODEL_PATH", "")))
-        ),
-        "email_model": _summarise_model_status(
-            ml.model_status(str(config.get("EMAIL_MODEL_PATH", "")))
-        ),
-        "sms_model": _summarise_model_status(
-            ml.model_status(str(config.get("SMS_MODEL_PATH", "")))
-        ),
+        "url_model": artifact_status("URL_MODEL_PATH"),
+        "email_model": artifact_status("EMAIL_MODEL_PATH"),
+        "sms_model": artifact_status("SMS_MODEL_PATH"),
     }
